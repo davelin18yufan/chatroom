@@ -1,8 +1,17 @@
 import "./index.css";
-import { name } from "@/utils";
 import { io } from "socket.io-client"
 
-console.log("client side chatroom page", name);
+const url = new URL(location.href)
+// 抓取queryString
+const userName = url.searchParams.get("user_name")
+const roomName = url.searchParams.get("room_name")
+
+console.log("chat", userName, roomName)
+
+// 沒有接收到值就返回首頁
+if (!userName || !roomName) {
+  location.href = `/main/main.html`
+}
 
 const clientIo = io()
 
