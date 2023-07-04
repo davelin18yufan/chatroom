@@ -1,16 +1,18 @@
-import devServer from "./server/dev";
-import prodServer from "./server/prod";
+import devServer from "@/server/dev";
+import prodServer from "@/server/prod";
 import express from "express";
 import { Server } from "socket.io";
 import http from "http";
 
 import { name } from "@/utils";
+import UserService from "@/service/userService";
 
 const port = 3000;
 const app = express();
 // 建立伺服器端
 const server = http.createServer(app);
 const io = new Server(server);
+const userService = new UserService()
 
 // 監聽連接
 io.on("connection", (socket) => {
