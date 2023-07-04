@@ -12,6 +12,8 @@ if (!userName || !roomName) {
 }
 
 const clientIo = io()
+// 成功加入聊天室之後傳送歡迎訊息
+clientIo.emit("join", { userName, roomName})
 
 //取得聊天室輸入匡
 const textInput = document.getElementById("textInput") as HTMLInputElement
@@ -45,6 +47,19 @@ function msgHandler(msg: string){
   chatBoard.scrollTop = chatBoard.scrollHeight
 }
 
+function roomMsgHandler(msg: string) {
+  const divBox = document.createElement("div")
+  divBox.classList.add("flex", "justify-center", "mb-4", "items-center")
+  divBox.innerHTML = `
+    <p class="text-gray-700 text-sm">${msg}</p>
+  `
+
+  chatBoard.appendChild(divBox)
+  //把畫面往下推
+  chatBoard.scrollTop = chatBoard.scrollHeight
+
+}
+
 submitBtn.addEventListener("click", () => {
   const textValue = textInput.value
   
@@ -57,11 +72,17 @@ backBtn.addEventListener("click", () => {
 })
 
 // 建立前端頁面連線
+// 加入歡迎訊息
 clientIo.on("join", (msg) => {
+  roomMsgHandler(msg)
 })
 
 clientIo.on("chat", (msg) => {
-  console.log("client", msg)
-  // 究收後端回傳的訊息丟到聊天室
+  //收後端回傳的訊息丟到聊天室
   msgHandler(msg)
+})
+
+// 離開通知訊息
+clientIo.on("leave", (msg) => {
+  roomMsgHandler(msg)
 })
