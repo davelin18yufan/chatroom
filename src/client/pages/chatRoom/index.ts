@@ -92,6 +92,14 @@ submitBtn.addEventListener("click", () => {
   clientIo.emit("chat", textValue) //chat event
 })
 
+textInput.addEventListener("keyup", (event) => {
+  const textValue = textInput.value
+  if(event.key === "Enter"){
+    // 拿到職後發送到伺服器端
+    clientIo.emit("chat", textValue) //chat event
+  }
+})
+
 backBtn.addEventListener("click", () => {
   location.href = `/main/main.html`
 })
