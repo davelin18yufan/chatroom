@@ -3,8 +3,8 @@ import prodServer from "@/server/prod";
 import express from "express";
 import { Server } from "socket.io";
 import http from "http";
-
 import UserService from "@/service/userService";
+import moment from "moment";
 
 const port = 3000;
 const app = express();
@@ -13,8 +13,10 @@ const server = http.createServer(app);
 const io = new Server(server);
 const userService = new UserService()
 
-// 監聽連接
+// 監聽連接，可以想像成事件監聽
 io.on("connection", (socket) => {
+  socket.emit("userId", socket.id)
+
   // 接收加入歡迎訊息
   socket.on("join", ({ userName, roomName}: { userName: string, roomName: string}) => {
     //加入後產生使用者物件並加入
@@ -28,13 +30,18 @@ io.on("connection", (socket) => {
     socket.join(userData.roomName)
 
     userService.addUser(userData)
-
+    // 自己本身看不到broadcast訊息
     socket.broadcast.to(userData.roomName).emit("join", `${userName} has joined ${roomName}`)
   })
 
   // 連接後監聽chat頻道的訊息
   socket.on("chat", (msg) => {
-    io.emit("chat", msg) // 因為前後端接受有時間差，使用一樣的事件觸發沒關係
+    const userData = userService.getUser(socket.id)
+    const time = moment.utc()
+    if(userData){
+      io.to(userData.roomName).emit("chat", { userData, msg, time }) // 不使用broadcast因為自己也要看到自己的訊息
+    }
+
   })
 
   // 開聊天室訊息

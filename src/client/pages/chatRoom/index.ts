@@ -1,5 +1,8 @@
 import "./index.css";
 import { io } from "socket.io-client"
+import { UserData } from "@/service/userService"
+
+type UserMsg = { userData: UserData, msg: string, time: number }
 
 const url = new URL(location.href)
 // 抓取queryString
@@ -23,22 +26,44 @@ const headerRoomName = document.getElementById("headerRoomName") as HTMLParagrap
 const backBtn = document.getElementById("backBtn") as HTMLButtonElement
 
 headerRoomName.innerText = roomName || " - "
+let userId = ""
 
 //處理送出訊息
-function msgHandler(msg: string){
+function msgHandler(data: UserMsg){
+  const date = new Date(data.time)
+  const time = `${date.getHours()}:${date.getMinutes()}`
+
   const divBox = document.createElement("div")
-  divBox.classList.add("flex", "justify-end", "mb-4", "items-end")
-  divBox.innerHTML = `
-    <p class="text-xs text-gray-700 mr-4">00:00</p>
-    <div>
-      <p class="text-xs text-white mb-1 text-right">Dave</p>
-      <p
+  divBox.classList.add("flex", "mb-4", "items-end")
+  // 判斷是不是本人傳的
+  if(userId === data.userData.id){
+    divBox.classList.add("justify-end")
+    divBox.innerHTML = `
+      <p class="text-xs text-gray-700 mr-4">${time}</p>
+      <div>
+        <p class="text-xs text-white mb-1 text-right">${data.userData.userName}</p>
+        <p
         class="mx-w-[50%] break-all bg-white px-4 py-2 rounded-bl-full rounded-br-full rounded-tl-full"
-      >
-        ${msg}
-      </p>
-    </div>
-  `
+        >
+          ${data.msg}
+        </p>
+      </div>
+    `
+  }else{
+    divBox.classList.add("justify-start")
+    divBox.innerHTML = `
+      <div>
+        <p class="text-xs text-gray-700 mb-1">${data.userData.userName}</p>
+        <p
+          class="mx-w-[50%] break-all bg-gray-800 px-4 py-2 rounded-tr-full rounded-br-full rounded-tl-full text-white"
+        >
+          ${data.msg}
+        </p>
+      </div>
+
+      <p class="text-xs text-gray-700 ml-4">${time}</p>
+    `
+  }
 
   chatBoard.appendChild(divBox)
   //清空輸入匡
@@ -77,12 +102,17 @@ clientIo.on("join", (msg) => {
   roomMsgHandler(msg)
 })
 
-clientIo.on("chat", (msg) => {
+clientIo.on("chat", (data) => {
   //收後端回傳的訊息丟到聊天室
-  msgHandler(msg)
+  msgHandler(data)
 })
 
 // 離開通知訊息
 clientIo.on("leave", (msg) => {
   roomMsgHandler(msg)
+})
+
+// 接收加入的使用者ＩＤ
+clientIo.on("userId", (id) => {
+  userId = id
 })
