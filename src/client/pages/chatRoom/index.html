@@ -4,6 +4,7 @@
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
     <title>CHATROOM</title>
   </head>
   <body class="bg-dark">
@@ -26,7 +27,7 @@
             />
           </svg>
         </button>
-        <p id="headerRoomName" class="text-white font-extrabold">ROOM 1</p>
+        <p id="headerRoomName" class="text-white font-extrabold"></p>
         <div class="h-[40px] w-[40px]"></div>
       </header>
 
@@ -34,22 +35,11 @@
         class="mt-[10px] box-border px-4 h-[calc(100vh-156px)] overflow-y-scroll"
         id="chatBoard"
       >
-        <!-- <div class="flex justify-start mb-4 items-end">
-          <div>
-            <p class="text-xs text-gray-700 mb-1">Dave</p>
-            <p
-              class="mx-w-[50%] break-all bg-gray-800 px-4 py-2 rounded-tr-full rounded-br-full rounded-tl-full text-white"
-            >
-              嗨嗨嗨！
-            </p>
-          </div>
-
-          <p class="text-xs text-gray-700 ml-4">00:00</p>
-        </div> -->
+        <!-- left side -->
 
         <!-- right side -->
 
-        <!--Welcome message-->
+        <!-- Welcome message -->
       </div>
 
       <div class="flex px-[20px] py-[20px]">
@@ -58,7 +48,12 @@
           class="bg-gray-700 w-full h-[40px] rounded-full box-border mr-4 text-white"
           name="textInput"
           id="textInput"
+          autofocus
         />
+        <div class="relative">
+          <button class="text-white text-[20px] mt-1" id="pickerBtn">&#9787;</button>
+          <div id="picker" class="absolute bottom-10 right-4 hidden"></div>
+        </div>
         <button
           class="w-[50px] h-[40px] rounded-md flex justify-center items-center"
           id="submitBtn"
@@ -76,5 +71,6 @@
         </button>
       </div>
     </div>
+
   </body>
 </html>

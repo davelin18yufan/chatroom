@@ -52,7 +52,7 @@ Before running the application, ensure you have the following installed:
 
 1. Enter a username and select a chatroom to join.
 2. Start sending and receiving messages with other users in the same chatroom.
-3. To switch to a different chatroom, click on the chatroom name in the sidebar and select another chatroom from the list.
+3. Able to send emoji.
 4. Enjoy chatting with multiple users in separate chatrooms without any interference.
 
 ## Technologies Used

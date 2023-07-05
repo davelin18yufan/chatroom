@@ -1,6 +1,8 @@
 import "./index.css";
 import { io } from "socket.io-client"
 import { UserData } from "@/service/userService"
+import data from '@emoji-mart/data'
+import { Picker } from 'emoji-mart'
 
 type UserMsg = { userData: UserData, msg: string, time: number }
 
@@ -24,9 +26,30 @@ const submitBtn = document.getElementById("submitBtn") as HTMLButtonElement
 const chatBoard = document.getElementById("chatBoard") as HTMLDivElement
 const headerRoomName = document.getElementById("headerRoomName") as HTMLParagraphElement
 const backBtn = document.getElementById("backBtn") as HTMLButtonElement
+const picker = document.getElementById("picker") as HTMLDivElement
+const pickerBtn = document.getElementById("pickerBtn") as HTMLButtonElement
 
 headerRoomName.innerText = roomName || " - "
 let userId = ""
+
+// emoji
+new Picker({
+  parent: document.getElementById('picker'),
+  data: data,
+  categories: [
+    'people',
+    'activity',
+    // 'flags',
+    // 'foods',
+    // 'frequent',
+    'nature',
+    // 'objects',
+    // 'places',
+    // 'symbols',
+  ],
+  previewPosition: "none",
+  onEmojiSelect: emojiSelectHandler,
+})
 
 //處理送出訊息
 function msgHandler(data: UserMsg){
@@ -53,7 +76,7 @@ function msgHandler(data: UserMsg){
     divBox.classList.add("justify-start")
     divBox.innerHTML = `
       <div>
-        <p class="text-xs text-gray-700 mb-1">${data.userData.userName}</p>
+        <p class="text-xs text-neutral-400 mb-1">${data.userData.userName}</p>
         <p
           class="mx-w-[50%] break-all bg-gray-800 px-4 py-2 rounded-tr-full rounded-br-full rounded-tl-full text-white"
         >
@@ -103,6 +126,15 @@ textInput.addEventListener("keyup", (event) => {
 backBtn.addEventListener("click", () => {
   location.href = `/main/main.html`
 })
+
+pickerBtn.addEventListener("click", () => {
+  picker.classList.toggle("hidden")
+})
+
+function emojiSelectHandler(emoji: {native: string}) {
+  textInput.value += emoji.native
+  textInput.focus() // focus回輸入匡
+}
 
 // 建立前端頁面連線
 // 加入歡迎訊息
